@@ -12,6 +12,16 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Requirements
+
+You need to have installed:
+
+- [docker](https://www.docker.com/get-started/)
+- [nodejs](https://nodejs.org/en/)
+- [pnpm](https://pnpm.io/installation)
+- [nestjs/cli](https://docs.nestjs.com/cli/overview)
+- [TablePlus or other database manager](https://tableplus.com/)
+
 ## Installation
 
 1. clon repository
