@@ -9,5 +9,11 @@ export class Order {
     @Column('text', {
         unique: true,
     })
-    title: string;
+    client: string;
+
+    @Column('timestamp')
+    request_date: Date;
+
+    @Column('time')
+    delivery_date: Date;
 }
