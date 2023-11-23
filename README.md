@@ -14,15 +14,25 @@
 
 ## Installation
 
+1. clon repository
+```bash
+$ git clone
+```
+2. install dependencies
 ```bash
 $ pnpm install
+```
+3. clone .env.template to .env
+4. change .env variables
+5. run database
+```bash
+$ docker compose up -d
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ docket compose up -d
 $ pnpm run start
 
 # watch mode
