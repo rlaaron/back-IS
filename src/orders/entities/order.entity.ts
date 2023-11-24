@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Order {
@@ -10,10 +10,17 @@ export class Order {
         unique: true,
     })
     client: string;
-
-    @Column('timestamp')
+ 
+    @Column('date')
     request_date: Date;
+    //TODO: REVISAR QUE TIPO DE DATO Y COMO HARE ESTA PETICION
 
-    @Column('time')
+    @Column('date')
     delivery_date: Date;
+
+    @BeforeInsert()
+    checkDates() {
+        this.request_date = new Date();
+        this.delivery_date = new Date();
+    }
 }
