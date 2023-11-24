@@ -29,16 +29,21 @@ export class OrdersService {
     return this.orderRepository.find({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: string) {
+    const order = await this.orderRepository.findOneBy({id});
+    if(!order)
+      throw new BadRequestException(`Order with id: ${id}, not found`);
+
+    return order;
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
     return `This action updates a #${id} order`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  async remove(id: string) {
+    const order = await this.findOne(id);
+    this.orderRepository.remove(order);
   }
 
   private handleDBExeptions( error: any ){

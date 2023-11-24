@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { BreadsService } from './breads.service';
 import { CreateBreadDto } from './dto/create-bread.dto';
 import { UpdateBreadDto } from './dto/update-bread.dto';
@@ -17,9 +17,9 @@ export class BreadsController {
     return this.breadsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.breadsService.findOne(+id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.breadsService.findOne(term);
   }
 
   @Patch(':id')
@@ -28,7 +28,7 @@ export class BreadsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.breadsService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.breadsService.remove(id);
   }
 }
