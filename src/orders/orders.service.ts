@@ -12,13 +12,13 @@ export class OrdersService {
 
   constructor(
     @InjectRepository(Order)
-    private readonly breadRepository: Repository<Order>,
+    private readonly orderRepository: Repository<Order>,
   ){}
 
   async create(createOrderDto: CreateOrderDto) {
     try{
-      const order = this.breadRepository.create(createOrderDto);
-      await this.breadRepository.save(order);
+      const order = this.orderRepository.create(createOrderDto);
+      await this.orderRepository.save(order);
       return order; 
     }catch(error){
       this.handleDBExeptions(error);
@@ -26,7 +26,7 @@ export class OrdersService {
   }
 
   findAll() {
-    return `This action returns all orders`;
+    return this.orderRepository.find({});
   }
 
   findOne(id: number) {

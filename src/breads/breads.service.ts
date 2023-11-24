@@ -26,7 +26,7 @@ export class BreadsService {
   }
 
   findAll() {
-    return `This action returns all breads`;
+    return this.breadRepository.find({});
   }
 
   findOne(id: number) {
