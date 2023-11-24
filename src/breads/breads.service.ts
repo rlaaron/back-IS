@@ -1,11 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateBreadDto } from './dto/create-bread.dto';
 import { UpdateBreadDto } from './dto/update-bread.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Bread } from './entities/bread.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BreadsService {
-  create(createBreadDto: CreateBreadDto) {
-    return 'This action adds a new bread';
+
+  private readonly logger = new Logger(BreadsService.name);
+
+  constructor(
+    @InjectRepository(Bread)
+    private readonly breadRepository: Repository<Bread>,
+  ) {}
+
+  async create(createBreadDto: CreateBreadDto) {
+    try {
+      const bread = this.breadRepository.create(createBreadDto);
+      await this.breadRepository.save(bread);
+      return bread;
+    } catch (error) {
+      this.handleDBExeptions(error);
+    }
   }
 
   findAll() {
@@ -23,4 +40,13 @@ export class BreadsService {
   remove(id: number) {
     return `This action removes a #${id} bread`;
   }
+
+  private handleDBExeptions( error: any ){
+    if( error.code === '23505' )
+      throw new BadRequestException(error.detail);
+    
+      this.logger.error(error);
+      throw new InternalServerErrorException('Unexpected error, check server logs');
+  }
+  
 }
