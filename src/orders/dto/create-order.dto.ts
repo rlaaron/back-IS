@@ -1,5 +1,4 @@
-import { IsArray, IsDate, IsIn, IsOptional, IsString } from "class-validator";
-import { OrderItem } from "src/order-item/entities/order-item.entity";
+import { IsDate, IsOptional, IsString } from "class-validator";
 
 export class CreateOrderDto {
 
@@ -8,16 +7,12 @@ export class CreateOrderDto {
 
     // @IsDate()
 
-    @IsString()
+    @IsDate()
     @IsOptional()
-    request_date: string;
+    request_date: Date;
 
     // @IsDate()
-    @IsString()
+    @IsDate()
     @IsOptional()
-    delivery_date: string;
-
-    @IsArray()
-    @IsOptional()
-    orderItem?: OrderItem[];
+    delivery_date: Date;
 }

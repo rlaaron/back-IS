@@ -1,7 +1,4 @@
-import { Bread } from 'src/breads/entities/bread.entity';
-import { OrderItem } from 'src/order-item/entities/order-item.entity';
-import { BeforeInsert, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Order {
@@ -13,12 +10,6 @@ export class Order {
         unique: true,
     })
     client: string;
-
-    @OneToMany(
-        () => OrderItem,
-        (orderItem) => orderItem.order,
-    )
-    orderItem: OrderItem[];
  
     @Column('date')
     request_date: Date;

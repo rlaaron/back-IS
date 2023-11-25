@@ -5,29 +5,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
 
-
-// import { OrderItem } from 'src/order-item/entities/order-item.entity';
-
 @Injectable()
 export class OrdersService {
 
   private readonly logger = new Logger(OrdersService.name);
 
-
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
-    // @InjectRepository(OrderItem)
-    // private readonly orderItemRepository: Repository<OrderItem>,
-    
   ){}
 
   async create(createOrderDto: CreateOrderDto) {
-    try{ 
-      // const oderItems = createOrderDto.orderItem.map(item =>{
-      //   const bread = this.breadRepository.findOne({id: item.product_id});
-      // });
-      // const bread = await createOrderDto.orderItem.map(item => console.log(item.product_id));
+    try{
       const order = this.orderRepository.create(createOrderDto);
       await this.orderRepository.save(order);
       return order; 
