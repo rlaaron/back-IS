@@ -16,7 +16,7 @@ export class Bread {
     price: number;
     
 
-    @OneToOne(
+    @ManyToOne(
         () => OrderItem,
         (orderItem) => orderItem.bread,
     )

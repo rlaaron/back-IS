@@ -1,6 +1,6 @@
 import { Bread } from 'src/breads/entities/bread.entity';
 import { OrderItem } from 'src/order-item/entities/order-item.entity';
-import { BeforeInsert, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 
 @Entity()
@@ -10,14 +10,16 @@ export class Order {
     id: string;
 
     @Column('text', {
-        unique: true,
+        // unique: true,
     })
     client: string;
 
     @OneToMany(
         () => OrderItem,
         (orderItem) => orderItem.order,
+        { cascade: true}
     )
+    @JoinColumn()
     orderItem: OrderItem[];
  
     @Column('date')

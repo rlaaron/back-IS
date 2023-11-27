@@ -18,8 +18,8 @@ export class CreateOrderItemDto {
     @IsPositive()
     quantity:number;
 
-    
-    order: Order;
+    @IsOptional()
+    order?: Order;
 
 
 }

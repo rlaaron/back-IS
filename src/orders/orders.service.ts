@@ -33,70 +33,21 @@ export class OrdersService {
     // private readonly orderItemController: OrderItemController,
   ) {}
 
+
   async create(createOrderDto: CreateOrderDto) {
     try {
-      const { orderItem, ...orderDetails } = createOrderDto;
-      // const order = this.orderRepository.create({
-      //   ...orderDetails,
-      //   orderItem: await Promise.all(
-      //     orderItem.map((item) =>
-      //       // this.orderItemService.create({
-      //       //   product_id: item.product_id,
-      //       //   quantity: item.quantity,
-      //       //   order: order,
-      //       // }),
-      //       this.orderItemService.create(item)
-      //     ),
-      //   ),
-      // });
-      // const savedOrder = await this.orderRepository.save(order);
-      let orderItems: OrderItem[];
-      const order = this.orderRepository.create({
-        ...orderDetails,
-        orderItem: orderItems
-      });
-      orderItems = await Promise.all(
-        orderItem.map((item) =>
-          this.orderItemService.create({
-            product_id: item.product_id,
-            quantity: item.quantity,
-            order: order,
-          }),
-        ),
-      );
+    const {orderItem, ...orderDetails} = createOrderDto;
+    const order = this.orderRepository.create({
+      ...orderDetails,
+      orderItem: orderItem.map((item) => ({product_id: item.product_id, quantity: item.quantity}))
+    })
+    return await this.orderRepository.save(order);
 
-      
-      const savedOrder = await this.orderRepository.save(order);
-      
-
-      console.log(savedOrder);
-  
-      return savedOrder;
-    } catch (error) {
+    }catch (error) {
+      console.log(error);
       this.handleDBExeptions(error);
     }
   }
-  // const order = this.orderRepository.create({
-      //   ...orderDetails,
-      //   orderItem: await Promise.all(
-      //     orderItem.map((item) =>
-      //       this.orderItemRepository.create({
-      //         product_id: item.product_id,
-      //         quantity: item.quantity,
-
-      //       }),
-      //     ),
-      //   ),
-      // });
-        // const order = this.orderRepository.create({
-        //   ...orderDetails,
-        //   orderItem: orderItem.map(item =>
-        //       this.orderItemRepository.create({
-        //         product_id: item.product_id,
-        //         quantity: item.quantity,
-        //       }),
-        //     ),
-        // });
   
   findAll() {
     return this.orderRepository.find({});

@@ -2,6 +2,7 @@ import { Bread } from 'src/breads/entities/bread.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -10,6 +11,7 @@ import {
 
 import { UUID } from 'crypto';
 import { Order } from 'src/orders/entities/order.entity';
+import { IsOptional } from 'class-validator';
 
 @Entity()
 export class OrderItem {
@@ -19,12 +21,15 @@ export class OrderItem {
   @Column('text')
   product_id: string;
 
-  @OneToOne(() => Bread, (bread) => bread.orderItem)
+  @OneToMany(() => Bread, (bread) => bread.orderItem)
+  @JoinColumn()
   bread: Bread;
 
   @Column('numeric')
   quantity: number;
 
+  @IsOptional()
   @ManyToOne(() => Order, (order) => order.orderItem)
-  order: Order;
+  @JoinColumn()
+  order?: Order;
 }

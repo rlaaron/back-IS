@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { CreateOrderItemDto } from './dto/create-order-item.dto';
 import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,7 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderItem } from './entities/order-item.entity';
 import { BreadsService } from '../breads/breads.service';
- 
+
 @Injectable()
 export class OrderItemService {
   private readonly logger = new Logger(OrderItemService.name);
@@ -15,25 +20,21 @@ export class OrderItemService {
     @InjectRepository(OrderItem)
     private readonly orderItemRepository: Repository<OrderItem>,
     private readonly breadService: BreadsService,
-
   ) {}
- 
+
   async create(createOrderItemDto: CreateOrderItemDto) {
-    try{
-      // const { product_id, ...orderItemDetails } = createOrderItemDto;
-      const { product_id, ...orderItemDetails } = createOrderItemDto;
+    try {
+      const { product_id, quantity } = createOrderItemDto;
       const bread = await this.breadService.findOne(product_id);
       const orderItem = this.orderItemRepository.create({
-        ...orderItemDetails,
-        bread: bread,
-        product_id: product_id,
-        // bread: bread,
-        // quantity: quantity,
+        product_id,
+        bread,
+        quantity,
       });
-      // await this.orderItemRepository.save(createOrderItemDto);
-       await this.orderItemRepository.save(orderItem);
+      await this.orderItemRepository.save(orderItem);
+
       return orderItem;
-    }catch(error){      
+    } catch (error) {
       this.handleDBExeptions(error);
     }
   }
@@ -45,7 +46,7 @@ export class OrderItemService {
   findOne(id: number) {
     return `This action returns a #${id} orderItem`;
   }
- 
+
   update(id: number, updateOrderItemDto: UpdateOrderItemDto) {
     return `This action updates a #${id} orderItem`;
   }
@@ -62,4 +63,4 @@ export class OrderItemService {
       'Unexpected error, check server logs 55',
     );
   }
-} 
+}
