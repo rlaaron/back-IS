@@ -17,7 +17,10 @@ export class CreateOrderDto {
     @IsOptional()
     delivery_date: string;
 
+    // @IsArray(OrderItem {each: true})
+    //check if if array of orderItem is correct
     @IsArray()
+    // @IsIn([OrderItem])
     @IsOptional()
     orderItem?: OrderItem[];
 }

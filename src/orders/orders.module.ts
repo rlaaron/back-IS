@@ -5,14 +5,19 @@ import { OrdersService } from './orders.service';
 import { Order } from './entities/order.entity';
 
 
-// import { OrderItem } from 'src/order-item/entities/order-item.entity';
+import { OrderItem } from 'src/order-item/entities/order-item.entity';
+import { OrderItemService } from 'src/order-item/order-item.service';
+import { OrderItemController } from 'src/order-item/order-item.controller';
+import { BreadsService } from 'src/breads/breads.service';
+import { Bread } from 'src/breads/entities/bread.entity';
 
 @Module({ 
   controllers: [OrdersController],
-  providers: [OrdersService],
+  providers: [OrdersService, OrderItemService, BreadsService], 
+  // providers: [OrdersService],
   imports: [
-    // TypeOrmModule.forFeature([Order, OrderItem])
-    TypeOrmModule.forFeature([Order])
+    TypeOrmModule.forFeature([Order, OrderItem, Bread])
+    // TypeOrmModule.forFeature([Order])
 
   ]
 })

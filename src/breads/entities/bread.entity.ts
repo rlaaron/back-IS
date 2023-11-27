@@ -21,8 +21,4 @@ export class Bread {
         (orderItem) => orderItem.bread,
     )
     orderItem: OrderItem;
-
-
-
-
 }

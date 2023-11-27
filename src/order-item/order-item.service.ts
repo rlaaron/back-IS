@@ -1,33 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateOrderItemDto } from './dto/create-order-item.dto';
 import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 // import { Bread } from 'src/breads/entities/bread.entity';
 import { Repository } from 'typeorm';
 import { OrderItem } from './entities/order-item.entity';
-// import { BreadsService } from '../breads/breads.service';
+import { BreadsService } from '../breads/breads.service';
  
 @Injectable()
 export class OrderItemService {
+  private readonly logger = new Logger(OrderItemService.name);
 
   constructor(
     @InjectRepository(OrderItem)
     private readonly orderItemRepository: Repository<OrderItem>,
-    // @InjectRepository(BreadsService)
-    // private readonly breadRepository: Repository<BreadsService>,
-    // private readonly breadService: BreadsService,
+    private readonly breadService: BreadsService,
 
   ) {}
-
+ 
   async create(createOrderItemDto: CreateOrderItemDto) {
     try{
-      const id = createOrderItemDto.product_id;
-      // const bread = await this.breadRepository.findOne({id});
-      // const bread = await this.breadService.findOne(id);
-      const orderItem = this
-    }catch(error){
-      console.log(error);
-      
+      // const { product_id, ...orderItemDetails } = createOrderItemDto;
+      const { product_id, ...orderItemDetails } = createOrderItemDto;
+      const bread = await this.breadService.findOne(product_id);
+      const orderItem = this.orderItemRepository.create({
+        ...orderItemDetails,
+        bread: bread,
+        product_id: product_id,
+        // bread: bread,
+        // quantity: quantity,
+      });
+      // await this.orderItemRepository.save(createOrderItemDto);
+       await this.orderItemRepository.save(orderItem);
+      return orderItem;
+    }catch(error){      
+      this.handleDBExeptions(error);
     }
   }
 
@@ -38,7 +45,7 @@ export class OrderItemService {
   findOne(id: number) {
     return `This action returns a #${id} orderItem`;
   }
-
+ 
   update(id: number, updateOrderItemDto: UpdateOrderItemDto) {
     return `This action updates a #${id} orderItem`;
   }
@@ -46,4 +53,13 @@ export class OrderItemService {
   remove(id: number) {
     return `This action removes a #${id} orderItem`;
   }
-}
+
+  private handleDBExeptions(error: any) {
+    if (error.code === '23505') throw new BadRequestException(error.detail);
+
+    this.logger.error(error);
+    throw new InternalServerErrorException(
+      'Unexpected error, check server logs 55',
+    );
+  }
+} 

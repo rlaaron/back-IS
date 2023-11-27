@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Bread } from './entities/bread.entity';
 import { Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid';
+import { log } from 'console';
 
 
 @Injectable()
@@ -39,10 +40,16 @@ export class BreadsService {
   async findOne(term: string) {
 
     let bread: Bread;
-    if(isUUID(term)){
-      bread = await this.breadRepository.findOneBy({ id: term });
-    } else{
-      bread = await this.breadRepository.findOneBy({ flavor: term})
+    try{
+      if(isUUID(term)){
+        console.log('its uuid');
+        
+        bread = await this.breadRepository.findOneBy({ id: term });
+      } else{
+        bread = await this.breadRepository.findOneBy({ flavor: term})
+      }
+    }catch(error){
+      this.handleDBExeptions(error);
     }
 
     if (!bread) {
