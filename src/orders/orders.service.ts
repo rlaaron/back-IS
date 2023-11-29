@@ -33,24 +33,33 @@ export class OrdersService {
     // private readonly orderItemController: OrderItemController,
   ) {}
 
-
   async create(createOrderDto: CreateOrderDto) {
     try {
-    const {orderItem, ...orderDetails} = createOrderDto;
-    const order = this.orderRepository.create({
-      ...orderDetails,
-      orderItem: orderItem.map((item) => ({product_id: item.product_id, quantity: item.quantity}))
-    })
-    return await this.orderRepository.save(order);
-
-    }catch (error) {
+      const { orderItem, ...orderDetails } = createOrderDto;
+      const order = this.orderRepository.create({
+        ...orderDetails,
+        orderItem: orderItem.map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+        })),
+      });
+      return await this.orderRepository.save(order);
+    } catch (error) {
       console.log(error);
       this.handleDBExeptions(error);
     }
   }
-  
-  findAll() {
-    return this.orderRepository.find({});
+
+  async findAll() {
+    try {
+      const orders = await this.orderRepository.find({
+        relations: ['orderItem', 'orderItem.bread'],
+         
+      });
+      return orders;
+    } catch (error) {
+      this.handleDBExeptions(error);
+    }
   }
 
   async findOne(id: string) {
