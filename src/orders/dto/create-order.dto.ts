@@ -3,8 +3,8 @@ import { OrderItem } from "src/order-item/entities/order-item.entity";
 
 export class CreateOrderDto {
 
-    @IsString()
-    client: string;
+    // @IsString()
+    // client: string;
 
     // @IsDate()
 

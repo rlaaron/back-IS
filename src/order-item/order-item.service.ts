@@ -40,7 +40,18 @@ export class OrderItemService {
   }
 
   findAll() {
-    return `This action returns all orderItem`;
+    // return `This action returns all orderItem`;
+    try{
+      const orderItems = this.orderItemRepository.find({
+        relations: {
+          bread: true,
+        }
+      })
+      return orderItems;
+    }catch(error){
+      this.handleDBExeptions(error);
+    }
+
   }
 
   findOne(id: number) {

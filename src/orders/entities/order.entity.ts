@@ -1,6 +1,7 @@
+import { User } from 'src/auth/entities/user.entity';
 import { Bread } from 'src/breads/entities/bread.entity';
 import { OrderItem } from 'src/order-item/entities/order-item.entity';
-import { BeforeInsert, Column, Entity, JoinColumn, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 
 @Entity()
@@ -9,10 +10,10 @@ export class Order {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column('text', {
-        // unique: true,
-    })
-    client: string;
+    // @Column('text', {
+    //     // unique: true,
+    // })
+    // client: string;
 
     @OneToMany(
         () => OrderItem,
@@ -28,6 +29,14 @@ export class Order {
 
     @Column('date')
     delivery_date: Date;
+
+    @ManyToOne(
+        () => User,
+        (user) => user.order,
+        { eager: true }
+    )
+    @JoinColumn({ name: 'user_id' })
+    user: User;
 
     @BeforeInsert()
     checkDates() {

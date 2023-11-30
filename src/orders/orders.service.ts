@@ -15,6 +15,7 @@ import { OrderItemService } from '../order-item/order-item.service';
 import { OrderItemController } from '../order-item/order-item.controller';
 import { Bread } from 'src/breads/entities/bread.entity';
 import { BreadsService } from 'src/breads/breads.service';
+import { User } from 'src/auth/entities/user.entity';
 // import { async } from 'rxjs';
 
 @Injectable()
@@ -33,7 +34,7 @@ export class OrdersService {
     // private readonly orderItemController: OrderItemController,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto) {
+  async create(createOrderDto: CreateOrderDto, user: User) {
     try {
       const { orderItem, ...orderDetails } = createOrderDto;
       const order = this.orderRepository.create({
@@ -42,6 +43,7 @@ export class OrdersService {
           product_id: item.product_id,
           quantity: item.quantity,
         })),
+        user,
       });
       return await this.orderRepository.save(order);
     } catch (error) {
@@ -53,10 +55,21 @@ export class OrdersService {
   async findAll() {
     try {
       const orders = await this.orderRepository.find({
-        relations: ['orderItem', 'orderItem.bread'],
-         
+        relations: {
+          orderItem: true, 
+          // orderItem.bread: true,
+          // orderItem: {
+            
+          // }
+        }
       });
-      return orders;
+      // return orders;
+      return orders.map(order => ({
+        ...order,
+        orderItem: order.orderItem.map(item => ({
+          ...item
+        }))
+      }))
     } catch (error) {
       this.handleDBExeptions(error);
     }
@@ -68,6 +81,14 @@ export class OrdersService {
       throw new BadRequestException(`Order with id: ${id}, not found`);
 
     return order;
+  }
+
+  async findOrderByUser(userId: string) {
+    const orders = await this.orderRepository.find({
+      where: { user: { id: userId } },
+    });
+
+    return orders;
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {

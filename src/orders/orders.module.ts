@@ -10,15 +10,19 @@ import { OrderItemService } from 'src/order-item/order-item.service';
 import { OrderItemController } from 'src/order-item/order-item.controller';
 import { BreadsService } from 'src/breads/breads.service';
 import { Bread } from 'src/breads/entities/bread.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({ 
   controllers: [OrdersController],
   providers: [OrdersService, OrderItemService, BreadsService], 
   // providers: [OrdersService],
   imports: [
-    TypeOrmModule.forFeature([Order, OrderItem, Bread])
-    // TypeOrmModule.forFeature([Order])
-
+    TypeOrmModule.forFeature([Order, OrderItem, Bread]),
+    AuthModule,
+  ],
+  exports: [
+    OrdersService,
+    TypeOrmModule,
   ]
 })
 export class OrdersModule {}
