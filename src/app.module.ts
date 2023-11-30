@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrdersModule } from './orders/orders.module';
 import { BreadsModule } from './breads/breads.module';
 import { OrderItemModule } from './order-item/order-item.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,9 +19,15 @@ import { OrderItemModule } from './order-item/order-item.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname,'..','public'), 
+    // }),
+
     OrdersModule,
     BreadsModule,
-    OrderItemModule
+    OrderItemModule,
+    AuthModule
   ],
 })
 export class AppModule {}
