@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity'; 
 import { LoginUserDto, CreateUserDto } from './dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { log } from 'console';
 
 
 @Injectable()
@@ -53,7 +54,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true, id: true } //! OJO!
+      select: { email: true, password: true, id: true, roles: true, fullName:true  } //! OJO!
     });
 
     if ( !user ) 

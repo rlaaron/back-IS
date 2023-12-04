@@ -23,9 +23,9 @@ export class OrdersController {
     return this.ordersService.findAll();
   }
 
-  @Get(':term')
-  findOne(@Param('term') term: string) {
-    return this.ordersService.findOne(term);
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.ordersService.findOne(id);
   }
 
   @Get('user/:userId')

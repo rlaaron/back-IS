@@ -1,5 +1,5 @@
 import { OrderItem } from "src/order-item/entities/order-item.entity";
-import { Column, Entity, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Bread {
@@ -16,9 +16,9 @@ export class Bread {
     price: number;
     
 
-    @ManyToOne(
+    @OneToMany(
         () => OrderItem,
         (orderItem) => orderItem.bread,
     )
-    orderItem: OrderItem;
+    orderItem: OrderItem[];
 }

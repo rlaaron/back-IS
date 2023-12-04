@@ -25,11 +25,11 @@ export class OrderItemService {
   async create(createOrderItemDto: CreateOrderItemDto) {
     try {
       const { product_id, quantity } = createOrderItemDto;
-      const bread = await this.breadService.findOne(product_id);
+      const bread2 = await this.breadService.findOne(product_id);
+      console.log(bread2);
       const orderItem = this.orderItemRepository.create({
-        product_id,
-        bread,
-        quantity,
+        ...createOrderItemDto,
+        bread: bread2,
       });
       await this.orderItemRepository.save(orderItem);
 
@@ -39,15 +39,23 @@ export class OrderItemService {
     }
   }
 
-  findAll() {
+  async findAll() {
     // return `This action returns all orderItem`;
     try{
-      const orderItems = this.orderItemRepository.find({
+      const orderItems = await this.orderItemRepository.find({
         relations: {
-          bread: true,
+          bread: true
         }
       })
-      return orderItems;
+      // retur
+      console.log(orderItems);
+      
+      return orderItems.map((orderItem) =>{
+        return {
+          ...orderItem,
+          bread: orderItem.bread.flavor
+        }
+      });
     }catch(error){
       this.handleDBExeptions(error);
     }

@@ -21,7 +21,7 @@ export class OrderItem {
   @Column('text')
   product_id: string;
 
-  @OneToMany(() => Bread, (bread) => bread.orderItem)
+  @ManyToOne(() => Bread, (bread) => bread.orderItem)
   @JoinColumn()
   bread: Bread;
 

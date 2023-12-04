@@ -1,7 +1,7 @@
-import { IsEmail, IsNumber, IsOptional, IsPhoneNumber, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsArray, IsEmail, IsNumber, IsOptional, IsPhoneNumber, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 
-export class CreateUserDto {
+export class CreateUserDto { 
 
     @IsString()
     @IsEmail()
@@ -29,6 +29,10 @@ export class CreateUserDto {
     @IsOptional()
     @IsPhoneNumber('MX')
     phone?: number;
+
+    @IsString({ each: true })
+    @IsArray()
+    roles: string[];
 
     
 

@@ -16,7 +16,6 @@ import { OrderItemController } from '../order-item/order-item.controller';
 import { Bread } from 'src/breads/entities/bread.entity';
 import { BreadsService } from 'src/breads/breads.service';
 import { User } from 'src/auth/entities/user.entity';
-import { isUUID } from 'class-validator';
 // import { async } from 'rxjs';
 
 @Injectable()
@@ -38,17 +37,15 @@ export class OrdersService {
   async create(createOrderDto: CreateOrderDto, user: User) {
     try {
       const { orderItem, ...orderDetails } = createOrderDto;
-      const order = this.orderRepository.create({
+      const order =  this.orderRepository.create({
         ...orderDetails,
-        orderItem: await Promise.all(
-          orderItem.map(async (item) => {
-            const bread = await this.breadService.findOne(item.product_id);
-            return {
-              ...item,
-              bread: bread,
-            };
-          }),
-        ),
+        orderItem: await Promise.all(orderItem.map(async (item) => {
+          const bread = await this.breadService.findOne(item.product_id);
+          return {
+            ...item,
+            bread: bread,
+          };
+        })),
         user,
       });
       return await this.orderRepository.save(order);
@@ -66,7 +63,7 @@ export class OrdersService {
       return orders.map((order) => {
         return {
           ...order,
-          orderItem: order.orderItem.map(({ quantity, bread }) => {
+          orderItem: order.orderItem.map(({quantity, bread}) => {
             return {
               // ...item,
               // bread: item.bread.flavor,
@@ -85,59 +82,13 @@ export class OrdersService {
       this.handleDBExeptions(error);
     }
   }
-  async findOne(term: string) {
-    let order: Order;
-    let orders: Order[];
-    if (isUUID(term)) {
-      const queryBuilder = this.orderRepository.createQueryBuilder('orderTable');
-      queryBuilder.innerJoinAndSelect('orderTable.user', 'user');
-      queryBuilder.innerJoinAndSelect('orderTable.orderItem', 'orderItem');
-      queryBuilder.innerJoinAndSelect('orderItem.bread', 'bread');
-      queryBuilder.where('orderTable.id = :id', { id: term });
-      order = await queryBuilder.getOne();
-      return {
-        ...order,
-        orderItem: order.orderItem.map(({ quantity, bread }) => {
-          return {
-            // ...item,
-            // bread: item.bread.flavor,
-            quantity,
-            bread: bread.flavor, 
-          };
-        }),
-        user: {
-          id: order.user.id,
-          email: order.user.email,
-          name: order.user.fullName,
-        },
-      };
-      
-    } else {
-      const queryBuilder = this.orderRepository.createQueryBuilder('orderTable');
-      queryBuilder.innerJoinAndSelect('orderTable.orderItem', 'orderItem');
-      queryBuilder.innerJoinAndSelect('orderTable.user', 'user');
-      queryBuilder.innerJoinAndSelect('orderItem.bread', 'bread');
-      queryBuilder.where('user.fullName = :fullName', { fullName: term });
-      orders = await queryBuilder.getMany();
-      return orders.map((order) => {
-        return {
-          ...order,
-          orderItem: order.orderItem.map(({ quantity, bread }) => {
-            return {
-              quantity,
-              bread: bread.flavor,
-            };
-          }),
-          user: {
-            id: order.user.id,
-            email: order.user.email,
-            name: order.user.fullName,
-          },
-        };
-      });
-    }
-    if (!order && !orders)
-      throw new BadRequestException(`Order with id: ${term}, not found`);
+
+  async findOne(id: string) {
+    const order = await this.orderRepository.findOneBy({ id });
+    if (!order)
+      throw new BadRequestException(`Order with id: ${id}, not found`);
+
+    return order;
   }
 
   async findOrderByUser(userId: string) {
@@ -154,7 +105,7 @@ export class OrdersService {
 
   async remove(id: string) {
     const order = await this.findOne(id);
-    // this.orderRepository.remove(order);
+    this.orderRepository.remove(order);
   }
 
   private handleDBExeptions(error: any) {

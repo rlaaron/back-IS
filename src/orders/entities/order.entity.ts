@@ -10,11 +10,6 @@ export class Order {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    // @Column('text', {
-    //     // unique: true,
-    // })
-    // client: string;
-
     @OneToMany(
         () => OrderItem,
         (orderItem) => orderItem.order,
@@ -38,9 +33,9 @@ export class Order {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    @BeforeInsert()
-    checkDates() {
-        this.request_date = new Date();
-        this.delivery_date = new Date();
-    }
+    // @BeforeInsert()
+    // checkDates() {
+    //     this.request_date = new Date();
+    //     this.delivery_date = new Date();
+    // }
 }
